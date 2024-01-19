@@ -12,6 +12,7 @@ export async function createUserAccount(user: INewUser) {
       user.password,
       user.name
     )
+    return newAccount;
   } catch (error) {
     console.log(error);
     return error;
