@@ -1,13 +1,14 @@
 import { Routes, Route } from 'react-router-dom';
 
-import './globals.css';
-import SigninForm from './_auth/forms/SigninForm';
-import SignupForm from './_auth/forms/SignupForm';
 import { Home } from './_root/pages';
-import AuthLayout from './_auth/AuthLayout';
-import RootLayout from './_root/RootLayout';
-import { Toaster } from "@/components/ui/toaster"
 
+import AuthLayout from "./_auth/AuthLayout";
+import RootLayout from "./_root/RootLayout";
+import SignupForm from "@/_auth/forms/SignupForm";
+import SigninForm from "@/_auth/forms/SigninForm";
+// import { Toaster } from "@/components/ui/toaster";
+
+import './globals.css';
 
 
 const App = () => {
@@ -24,8 +25,8 @@ const App = () => {
         </Route>
 
 
-        {/* private routes */}
-        <Route index element={<Home />}/>
+        {/* private routes
+        <Route index element={<Home />}/> */}
 
 
       </Routes>

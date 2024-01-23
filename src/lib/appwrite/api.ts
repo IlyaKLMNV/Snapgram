@@ -1,7 +1,13 @@
 import { ID, Query } from 'appwrite';
 
-import { INewUser } from "@/types";
 import { appwriteConfig, account, databases, storage, avatars } from "./config";
+import { INewUser } from "@/types";
+
+// ============================================================
+// AUTH
+// ============================================================
+
+// ============================== SIGN UP
 
 export async function createUserAccount(user: INewUser) {
   try {
@@ -11,15 +17,18 @@ export async function createUserAccount(user: INewUser) {
       user.password,
       user.name
     );
+
     if(!newAccount) throw Error;
+
     const avatarUrl = avatars.getInitials(user.name);
+
     const newUser = await saveUserToDB({
       accountId: newAccount.$id,
       name: newAccount.name,
       email: newAccount.email,
       username: user.username,
       imageUrl: avatarUrl,
-    })
+    });
     return newUser;
   } catch (error) {
     console.log(error);
@@ -27,6 +36,7 @@ export async function createUserAccount(user: INewUser) {
   }
 }
 
+// ============================== SAVE USER TO DB
 export async function saveUserToDB(user: {
   accountId: string;
   email: string;
@@ -40,12 +50,14 @@ export async function saveUserToDB(user: {
       appwriteConfig.userCollectionId,
       ID.unique(),
       user,
-    )
+    );
     return newUser;
   } catch (error) {
     console.log(error);
   }
 }
+
+// ============================== SIGN IN
 
 export async function signInAccount(user: { email: string; password: string; }) {
   try {
@@ -56,18 +68,35 @@ export async function signInAccount(user: { email: string; password: string; }) 
   }
 }
 
-export async function getCurrentUser() {
+// ============================== GET ACCOUNT
+export async function getAccount() {
   try {
     const currentAccount = await account.get();
-    if(!currentAccount) throw Error;
+
+    return currentAccount;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// ============================== GET USER
+export async function getCurrentUser() {
+  try {
+    const currentAccount = await getAccount();
+
+    if (!currentAccount) throw Error;
+
     const currentUser = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.userCollectionId,
-      [Query.equal('accountId', currentAccount.$id)]
-    )
-    if(!currentUser) throw Error;
+      [Query.equal("accountId", currentAccount.$id)]
+    );
+
+    if (!currentUser) throw Error;
+
     return currentUser.documents[0];
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    return null;
   }
 }
